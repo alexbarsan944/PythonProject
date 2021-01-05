@@ -69,7 +69,7 @@ def query_db(**criteria):
     for i in criteria:
         if criteria[i] is not None and i is not 'format':
             query_criteria[i] = criteria[i]
-        if i is 'format':
+        elif criteria[i] is not None and i is 'format':
             format_exists = True
             query_format = f'AND FileName LIKE "%.{criteria[i]}"'
 
@@ -86,10 +86,26 @@ def query_db(**criteria):
     myresult = mycursor.fetchall()
 
     if not myresult:
-        return 'No data'
+        return 0
     for row in myresult:
         print(row)
 
 
-def update_row():
+def update_row(id, **criteria):
+    if query_db(id=id) is not 0:  # if exists updatable row
+        set_values = ''
+        for i in criteria:
+            if criteria[i] is not None:
+                set_values += i + ' = ' + '"' + criteria[i] + '"' + ', '
+
+        set_values = set_values[:-2]
+        query = f"UPDATE songs SET {set_values} WHERE id = id;"
+        mycursor.execute(query)
+        mydb.commit()
+        print(f'Row with id = {id} updated successfully')
+    else:
+        print('ID not found.')
+        return 0
     pass
+
+# update_row()
