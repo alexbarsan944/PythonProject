@@ -77,18 +77,21 @@ def query_db(**criteria):
     for k, v in query_criteria.items():
         where_statement.append(k + '=' + '"' + v + '"')
 
-    where_statement = ' and '.join(where_statement)
+    if format_exists and len(query_criteria) == 1:
+        where_statement = 'where 1=1' + ' and '.join(where_statement)
+    else:
+        where_statement = 'where ' + ' and '.join(where_statement)
+
     if format_exists:
         where_statement += query_format
 
-    query = f'select * from songs where {where_statement}'
+    query = f'select * from songs {where_statement}'
+    # print(query)
     mycursor.execute(query)
     myresult = mycursor.fetchall()
-
     if not myresult:
-        return 0
-    for row in myresult:
-        print(row)
+        return 'No data found'
+    return myresult
 
 
 def update_row(id, **criteria):

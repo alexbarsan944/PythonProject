@@ -35,8 +35,29 @@ def modificare_metadate(song_id, **criteria):
 # modificare_metadate('15', tags='indie', song='anne')
 
 
-def create_savelist(output_path):
+def create_savelist(output_path, **criteria):
+    from zipfile import ZipFile
+
+    query_result = db.query_db(**criteria)
+    if query_result == 0:
+        print('No data found')
+    else:
+        files = []
+        for row in query_result:
+            files.append(row[1])
+
+        zipObj = ZipFile(output_path, 'w')
+
+        for f in files:
+            print(f)
+            zipObj.write('Storage/' + f)
+
+        zipObj.close()
+        print('Files added succesfully')
     pass
+
+
+# create_savelist('playlist.zip', format='flac')
 
 
 def search(**criteria):
@@ -66,11 +87,11 @@ def search(**criteria):
             print('`', i, '`', 'is an invalid argument.')
             exit(0)
 
-    db.query_db(id=id, artist=artist, song_name=song_name, date=date, tags=tags, format=format)
+    return db.query_db(id=id, artist=artist, song_name=song_name, date=date, tags=tags, format=format)
     pass
 
 
-# if search(id='15') is 0: print('No data')
+print(search(id='16'))
 
 
 def play(song_name):
@@ -82,6 +103,4 @@ def play(song_name):
 
     pass
 
-
-play('Storage/02 Disparate Youth.flac')
-
+# play('Storage/02 Disparate Youth.flac')
