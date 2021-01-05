@@ -1,32 +1,34 @@
+import db
+from shutil import copy
+
+
 def add_song(song_name_path, artist, song, date, tags):  # returns id of the song
-    from shutil import copy
-    import db
 
     dst = 'Storage'
     try:
         copy(song_name_path, dst)
+        filename = song_name_path.split('/')[1]
+        db.add(filename, artist, song, date, tags)
+        print('File added in Storage')
     except:
         print("File already exists in Storage")
 
-    filename = song_name_path.split('/')[1]
-    db.add(filename, artist, song, date, tags)
-
     pass
 
 
-# add_song("songs/11 Anne.flac", 'Santigold', "Anne", "2008-04-29", 'indie rock')
+add_song("songs/11 Anne.flac", 'Santigold', "Anne", "2008-04-29", 'indie rock')
 
 
 def remove_song(song_id):
-    import db
-    db.remove(2)
+    db.remove(song_id)
     pass
 
 
-remove_song(1)
+# remove_song(14)
 
 
 def modificare_metadate(song_id):
+
     pass
 
 

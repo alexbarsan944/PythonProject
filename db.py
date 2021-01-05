@@ -1,4 +1,5 @@
 import mysql.connector
+import os
 
 mydb = mysql.connector.connect(
     host='localhost',
@@ -10,17 +11,56 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 
-def add(filename, artist, song, date, tags):
-    query = f'INSERT INTO songs VALUES ("{filename}", "{artist}", "{song}", "{date}", "{tags}");'
+def get_id(filename):
+    query = f'select id from songs where filename = "{filename}"'
     mycursor.execute(query)
-    mydb.commit()
+    myresult = mycursor.fetchall()
+
+    if not myresult:
+        return 0
+    return myresult
     pass
 
-def remove(song_id):
-    query = f'delete from songs where id = {song_id}'
+
+def get_filename(id):
+    query = f'select filename from songs where id = {id}'
     mycursor.execute(query)
-    mydb.commit()
+    myresult = mycursor.fetchall()
+
+    if not myresult:
+        return 0
+    return myresult
     pass
+
+
+def add(filename, artist, song, date, tags):
+    if get_id(filename) is not 0:
+        print("filename already exists in DB")
+    else:
+        query = f'INSERT INTO songs (filename, artist, song, date, tags) VALUES ("{filename}", "{artist}", "{song}", "{date}", "{tags}");'
+        mycursor.execute(query)
+        mydb.commit()
+        print('File added in DB')
+    pass
+
+
+def remove(song_id):
+    filename = get_filename(song_id)
+    if filename is not 0:
+        query = f'delete from songs where id = {song_id}'
+        mycursor.execute(query)
+        mydb.commit()
+        print('File removed from DB')
+        if os.path.exists('Storage/' + filename[0][0]):
+            os.remove('Storage/' + filename[0][0])
+            print('File removed from Storage')
+        else:
+            print("The file does not exist")
+    else:
+        print("The file does not exist")
+
+    pass
+
 
 def query_db(**criteria):
     query_criteria = {}
@@ -46,6 +86,10 @@ def query_db(**criteria):
     myresult = mycursor.fetchall()
 
     if not myresult:
-        print('No data')
+        return 'No data'
     for row in myresult:
         print(row)
+
+
+def update_row():
+    pass
