@@ -33,14 +33,15 @@ def get_filename(id):
     pass
 
 
-def add(filename, artist, song, date, tags):
+def add(filename, artist, song, date, tags, format):
     if get_id(filename) is not 0:
-        print("filename already exists in DB")
+        print("Filename already exists in DB")
     else:
-        query = f'INSERT INTO songs (filename, artist, song, date, tags) VALUES ("{filename}", "{artist}", "{song}", "{date}", "{tags}");'
+        query = f'INSERT INTO songs (filename, artist, song, date, tags, format) VALUES ("{filename}", "{artist}", "{song}", "{date}", "{tags}", "{format}");'
         mycursor.execute(query)
         mydb.commit()
-        print('File added in DB')
+        print('File added in DB and Storage')
+
     pass
 
 
@@ -64,26 +65,15 @@ def remove(song_id):
 
 def query_db(**criteria):
     query_criteria = {}
-    format_exists = False
-    query_format = None
     for i in criteria:
-        if criteria[i] is not None and i is not 'format':
+        if criteria[i] is not None:
             query_criteria[i] = criteria[i]
-        elif criteria[i] is not None and i is 'format':
-            format_exists = True
-            query_format = f'AND FileName LIKE "%.{criteria[i]}"'
 
     where_statement = []
     for k, v in query_criteria.items():
         where_statement.append(k + '=' + '"' + v + '"')
 
-    if format_exists and len(query_criteria) == 1:
-        where_statement = 'where 1=1' + ' and '.join(where_statement)
-    else:
-        where_statement = 'where ' + ' and '.join(where_statement)
-
-    if format_exists:
-        where_statement += query_format
+    where_statement = 'where ' + ' and '.join(where_statement)
 
     query = f'select * from songs {where_statement}'
     # print(query)
@@ -102,7 +92,8 @@ def update_row(id, **criteria):
                 set_values += i + ' = ' + '"' + criteria[i] + '"' + ', '
 
         set_values = set_values[:-2]
-        query = f"UPDATE songs SET {set_values} WHERE id = id;"
+        query = f"UPDATE songs SET {set_values} WHERE id = {id};"
+        # print(query)
         mycursor.execute(query)
         mydb.commit()
         print(f'Row with id = {id} updated successfully')

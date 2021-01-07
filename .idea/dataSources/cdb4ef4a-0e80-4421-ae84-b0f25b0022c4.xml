@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="@localhost">
-  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.19">
+  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.20">
     <root id="1">
       <ServerVersion>10.4.11</ServerVersion>
       <DefaultEngine>InnoDB</DefaultEngine>
@@ -1042,7 +1042,7 @@
     </collation>
     <user id="333" parent="1" name="pma">
       <Host>localhost</Host>
-      <ObjectGrants>SELECT,INSERT,UPDATE,DELETE|phpmyadmin:null
+      <ObjectGrants>SELECT,INSERT,UPDATE,DELETE|phpmyadmin
 </ObjectGrants>
     </user>
     <user id="334" parent="1" name="root">
@@ -1070,33 +1070,33 @@
     <column id="339" parent="337" name="filename">
       <Position>2</Position>
       <DataType>varchar(50)|0s</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="340" parent="337" name="artist">
       <Position>3</Position>
       <DataType>varchar(50)|0s</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="341" parent="337" name="song">
       <Position>4</Position>
       <DataType>varchar(50)|0s</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="342" parent="337" name="date">
       <Position>5</Position>
       <DataType>varchar(50)|0s</DataType>
-      <NotNull>1</NotNull>
     </column>
     <column id="343" parent="337" name="tags">
       <Position>6</Position>
       <DataType>varchar(30)|0s</DataType>
     </column>
-    <index id="344" parent="337" name="songs_id_uindex">
+    <column id="344" parent="337" name="format">
+      <Position>7</Position>
+      <DataType>varchar(30)|0s</DataType>
+    </column>
+    <index id="345" parent="337" name="songs_id_uindex">
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <key id="345" parent="337" name="songs_id_uindex">
+    <key id="346" parent="337" name="songs_id_uindex">
       <ColNames>id</ColNames>
       <UnderlyingIndexName>songs_id_uindex</UnderlyingIndexName>
     </key>
