@@ -5,6 +5,7 @@ import db
 
 
 def add_song(song_name_path, artist, song, date, tags, format):  # returns id of the song
+    """The main function for adding a song in the DB"""
 
     dst = 'Storage'
     try:
@@ -17,26 +18,30 @@ def add_song(song_name_path, artist, song, date, tags, format):  # returns id of
     pass
 
 
-# add_song("songs/05 Creator.flac", 'Santigold', "Creator", "2008-04-29", 'rock', 'flac')
-
-
 def remove_song(song_id):
-    db.remove(song_id)
+    """Main function for removing a song from the DB"""
+    try:
+        db.remove(song_id)
+    except:
+        print(f"Failed removing the song with the id {song_id}")
+
     pass
-
-
-# remove_song(17)
 
 
 def modificare_metadate(song_id, **criteria):
-    db.update_row(song_id, **criteria)
+    """Main function for modifying metadata"""
+
+    try:
+        db.update_row(song_id, **criteria)
+    except:
+        print(f"Failed modifying metadata for the song with id {song_id}")
+
     pass
 
 
-# modificare_metadate('15', tags='indie', song='Anne')
-
-
 def create_savelist(output_path, **criteria):
+    """Function used to create a zip file containing songs given keyword args criteria"""
+
     from zipfile import ZipFile
 
     if not output_path.endswith('.zip'):
@@ -62,10 +67,8 @@ def create_savelist(output_path, **criteria):
     pass
 
 
-# create_savelist('playlist.zip', format='flac')
-
-
 def search(**criteria):
+    """Main function for querying the DB"""
     import db
 
     artist = None
@@ -99,10 +102,9 @@ def search(**criteria):
     pass
 
 
-# search(id='16')
-
-
 def play(song_name):
+    """Function used for playing audio from Storage folder"""
+
     import miniaudio
     stream = miniaudio.stream_file('Storage/' + song_name)
     with miniaudio.PlaybackDevice() as device:
@@ -112,23 +114,20 @@ def play(song_name):
     pass
 
 
-# play('02 Disparate Youth.flac')
-
-
 while True:
+    """Main command loop"""
+
     input_command = input('Enter command. (H for help): ')
 
     if input_command.lower() == 'h':
         print('Examples: ')
         print("play 02 Disparate Youth.flac ")
         print("search id=16, format=flac ")
-        print("create_savelist - path, **criteria")
+        print("create_savelist playlist.zip format=flac")
         print("modificare_metadate('15', tags='indie', song='Anne')")
         print("add_song - songs/07 The Riot's Gone.flac, santigold, riot's gone, 2008, indie, flac ")
 
-        pass
-
-    if input_command.lower() == 'play':
+    elif input_command.lower() == 'play':
         song_name = input("Enter song name: ")
         play(song_name)
     elif input_command.lower() == 'search':

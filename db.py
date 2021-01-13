@@ -1,7 +1,7 @@
 import mysql.connector
 import os
 
-mydb = mysql.connector.connect(
+mydb = mysql.connector.connect(  # used to connect to DB
     host='localhost',
     user='root',
     passwd='',
@@ -12,6 +12,8 @@ mycursor = mydb.cursor()
 
 
 def get_id(filename):
+    """Function used to get the ID of a given filename"""\
+
     query = f'select id from songs where filename = "{filename}"'
     mycursor.execute(query)
     myresult = mycursor.fetchall()
@@ -23,6 +25,7 @@ def get_id(filename):
 
 
 def get_filename(id):
+    """Function used to get the filename of a given ID"""
     query = f'select filename from songs where id = {id}'
     mycursor.execute(query)
     myresult = mycursor.fetchall()
@@ -34,6 +37,8 @@ def get_filename(id):
 
 
 def add(filename, artist, song, date, tags, format):
+    """Function used to add a song in the DB"""
+
     if get_id(filename) is not 0:
         print("Filename already exists in DB")
     else:
@@ -46,6 +51,8 @@ def add(filename, artist, song, date, tags, format):
 
 
 def remove(song_id):
+    """Function used to remove a song from the DB given the song ID"""
+
     filename = get_filename(song_id)
     if filename is not 0:
         query = f'delete from songs where id = {song_id}'
@@ -64,6 +71,8 @@ def remove(song_id):
 
 
 def query_db(**criteria):
+    """Function used to query the DB given keyword args"""
+
     query_criteria = {}
     for i in criteria:
         if criteria[i] is not None:
@@ -85,6 +94,8 @@ def query_db(**criteria):
 
 
 def update_row(id, **criteria):
+    """Function used to update a row in the DB given an ID and keyword args"""
+
     if query_db(id=id) is not 0:  # if exists updatable row
         set_values = ''
         for i in criteria:
