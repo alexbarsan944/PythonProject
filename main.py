@@ -41,8 +41,7 @@ def modificare_metadate(song_id, **criteria):
 
 def create_savelist(output_path, **criteria):
     """Function used to create a zip file containing songs given keyword args criteria"""
-
-    from zipfile import ZipFile
+    import pyminizip
 
     if not output_path.endswith('.zip'):
         print('output_path not zip')
@@ -54,15 +53,8 @@ def create_savelist(output_path, **criteria):
     else:
         files = []
         for row in query_result:
-            files.append(row[1])
-
-        zipObj = ZipFile(output_path, 'w')
-
-        for f in files:
-            print(f)
-            zipObj.write('Storage/' + f)
-
-        zipObj.close()
+            files.append('Storage/' + row[1])
+        pyminizip.compress_multiple(files, [], output_path, "1233", 4)
         print('Files added succesfully')
     pass
 
@@ -120,30 +112,31 @@ while True:
     input_command = input('Enter command. (H for help): ')
 
     if input_command.lower() == 'h':
-        print('Examples: ')
+        print('\nExamples: \n')
         print("play 02 Disparate Youth.flac ")
         print("search id=16, format=flac ")
         print("create_savelist playlist.zip format=flac")
-        print("modificare_metadate('15', tags='indie', song='Anne')")
+        print("modificare_metadate 15, tags=indie, song=Anne")
         print("add_song - songs/07 The Riot's Gone.flac, santigold, riot's gone, 2008, indie, flac ")
+        print('remove 20 \n')
 
     elif input_command.lower() == 'play':
         song_name = input("Enter song name: ")
         play(song_name)
     elif input_command.lower() == 'search':
-        t = input('Enter parameters: id, artist, song_name, date, tags, format: ').strip(' ')
+        t = input('Enter parameters: id, artist, song, date, tags, format: ').strip(' ')
         t = re.split('[=,]', "".join(t.split()))
         t = {t[i]: t[i + 1] for i in range(0, len(t), 2)}
         search(**t)
     elif input_command.lower() == 'create_savelist':  # Done
         p = input('Enter path: ')
-        t = input('Enter parameters: id, artist, song_name, date, tags, format: ')
+        t = input('Enter parameters: id, artist, song, date, tags, format: ')
         t = re.split(', |=', t)
         t = {t[i]: t[i + 1] for i in range(0, len(t), 2)}
         create_savelist(p, **t)
     elif input_command.lower() == 'modificare_metadate':
         p = input('Enter id: ')
-        t = input('Enter parameters: id, artist, song_name, date, tags, format: ')
+        t = input('Enter parameters: id, artist, song, date, tags, format: ')
         t = re.split(', |=', t)
         t = {t[i]: t[i + 1] for i in range(0, len(t), 2)}
         modificare_metadate(p, **t)
